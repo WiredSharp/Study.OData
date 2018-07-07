@@ -1,11 +1,7 @@
-﻿using Study.OData.Api.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web.Http;
-using System.Web.OData.Builder;
+﻿using System.Web.Http;
 using System.Web.OData.Extensions;
-using System.Web.OData.Query;
+using System.Web.OData.Routing;
+using System.Web.OData.Routing.Conventions;
 
 namespace Study.OData.Api
 {
@@ -16,12 +12,22 @@ namespace Study.OData.Api
 			// Web API configuration and services
 
 			// Web API routes
-			config.MapHttpAttributeRoutes();
 
-			var builder = new ODataConventionModelBuilder();
-			builder.EntitySet<Product>("Products");
-			builder.EntityType<Product>().Filter(QueryOptionSetting.Allowed);
-			config.MapODataServiceRoute("ODataRoute", "api", builder.GetEdmModel());
+			// Add the CompositeKeyRoutingConvention.
+			var conventions = ODataRoutingConventions.CreateDefault();
+			conventions.Insert(0, new CompositeKeyRoutingConvention());
+
+			config.MapHttpAttributeRoutes();
+			config.MapODataServiceRoute("ODataRoute"
+				, "odata"
+				, StudyOdataModelBuilder.CreateConventionalEdm()
+				, pathHandler: new DefaultODataPathHandler()
+				, routingConventions: conventions);
+
+			config.Routes.MapHttpRoute(
+				 name: "ResourceById",
+				 routeTemplate: "api/{controller}({keys})"
+			);
 
 			config.Routes.MapHttpRoute(
 				 name: "DefaultApi",

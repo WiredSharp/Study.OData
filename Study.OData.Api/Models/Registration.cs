@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Study.OData.Client.Models
+﻿namespace Study.OData.Client.Models
 {
-	class Registration
+	public class Registration
 	{
 		public int ThreadId { get; set; }
 
-		public int ParticipantId { get; set; }
+		public string ParticipantLogin { get; set; }
 
 		public int BoxId { get; set; }
 	}

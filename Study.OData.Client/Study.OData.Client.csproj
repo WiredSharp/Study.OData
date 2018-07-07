@@ -85,6 +85,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EdmBuilder.cs" />
     <Compile Include="Models\Address.cs" />
     <Compile Include="Models\Box.cs" />
     <Compile Include="Models\Color.cs" />

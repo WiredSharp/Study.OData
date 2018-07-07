@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.OData.Builder;
+using System.Web.OData.Query;
 
 namespace Study.OData.Api
 {
@@ -94,16 +95,19 @@ namespace Study.OData.Api
 			return model;
 		}
 
-		public static IEdmModel CreateNonConventionalEdm()
+		public static IEdmModel CreateConventionalEdm()
 		{
 			var builder = new ODataConventionModelBuilder();
-			builder.EntityType<Registration>().HasKey(r => new { r.ParticipantId, r.ThreadId });
-			builder.EntityType<Participant>().HasKey(p => p.Login);
-			builder.EntityType<Thread>().HasKey(t => t.Id);
-			builder.EntityType<Box>().HasKey(b => b.Id);
-			builder.EntitySet<Thread>("Threads");
+			builder.EntityType<Registration>()
+				.HasKey(r => new { r.ParticipantLogin, r.ThreadId }).Filter(QueryOptionSetting.Allowed).Expand(SelectExpandType.Allowed);
+
+			builder.EntityType<Participant>();
+			builder.EntityType<MessageThread>().Filter(QueryOptionSetting.Allowed).Expand(SelectExpandType.Allowed);
+			builder.EntityType<Box>().Filter(QueryOptionSetting.Allowed);
+			builder.EntitySet<MessageThread>("Threads");
 			builder.EntitySet<Box>("Boxes");
 			builder.EntitySet<Participant>("Participants");
+			builder.EntitySet<Registration>("Registrations");
 			return builder.GetEdmModel();
 
 		}
